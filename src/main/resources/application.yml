@@ -1,0 +1,39 @@
+spring:
+
+  datasource:
+    #  db커넥션할 url, 처음 접속할때는 jdbc:h2:~/datajpa
+#    url: jdbc:h2:tcp://localhost/~/datajpa
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
+
+
+  jpa:
+    hibernate:
+        #어플리케이션 로딩시점에 테이블 드랍하고 다시 생성, 어플리케이션 내려가도 테이블 남겨놓음 db에서 확인가능
+        ddl-auto: create
+    properties:
+        hibernate:
+            #jpql쿼리를 콘솔에 남기는, 로그파일로 남길것이므로 주석처리, Hibernate: 으로 시작
+            show_sql: true
+
+            #포맷팅, 세로로 길게
+#            format_sql: true
+
+#  기본값 글로벌 설정, 기본 페이지 사이즈 원래 20개인데 10개로 설정
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+#        최대 페이지 사이즈
+        max-page-size: 2000
+#        Page를 1부터 시작하기, page=0 page=1과 결과 같음
+#        web에서 page 파라미터를 -1 처리 할 뿐이다. 따라서 응답값인 Page 에 모두 0 페이지 인덱스를 사용하는 한계
+        one-indexed-parameters: true
+
+#logging.level:
+#  implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.7' 추가함으로서
+#  파라미터 바로 볼 수 있는, 대신 성능이 좀 떨어짐
+#  org.hibernate.SQL: debug
+#  바인딩 된 파라미터를 볼 수 있는
+# org.hibernate.type: trace

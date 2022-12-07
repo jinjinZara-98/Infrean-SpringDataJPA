@@ -151,9 +151,11 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
      * count 쿼리를 다음과 같이 분리할 수 있음, total이 제일 시간 많이 잡아먹으므로
      * 쿼리가 복잡해지면 분리하는게 좋다
      * */
-    @Query(value = "select m from Member m", countQuery = "select count(m.username) from Member m")
+    @Query(value = "select m from Member m left join m.team t",
+           countQuery = "select count(m.username) from Member m")
     Page<Member> findByAge2 (int age, Pageable pageable);
 
+    List<Member> findTop2ByAge(int age);
     /**
      * 스프링 데이터 JPA를 사용한 벌크성 수정 쿼리, 대량 데이터 수정
      * 파라미터에 해당하는 나이를 모두 1씩 증가
@@ -210,6 +212,9 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     /**
      * JPA는 인터페이스 모음, 구현체인 하이버네이트가 더 많은 기능을 쓰고 싶을때 힌트를 날려줌
      * 오직 조회용으로만
+     * 이 메서드로 조회한 엔티티는 값을 변경해도 변경감지가 안일어난다, 조회용이니까
+     * 크게 쓸 일 없다?
+     * 진짜 중요하고 트래픽 많은 데에 넣는
      * */
     @QueryHints(value = @QueryHint(name = "org.hibernate.readOnly", value = "true"))
     Member findReadOnlyByUsername(String username);
@@ -217,7 +222,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     /**
      * JPA를 통해 lock을 어노테이션을 통해 편리하게 사용할 수 있다, 쓸 일이 많진 않음
      * 실시간 트래픽이 많은 서비스에선 걸면 안됨
-     * select할때 다른 걸 손대지 못하게 락을 건다
+     * select 할때 다른 걸 손대지 못하게 락을 건다
      */
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     List<Member> findLockByUsername(String name);

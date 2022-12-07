@@ -10,13 +10,19 @@ import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 
-//새로운 엔티티를 구별하기 위한 예제
+/** 새로운 엔티티를 구별하기 위한 예제 */
 @Entity
 /** 이벤트 기반으로 동작한다는걸 넣어줘야함 */
 @EntityListeners(AuditingEntityListener.class)
 //jpa는 기본생성자 필요, 롬복으로 어노테이션으로 기본생성자 생성
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-/** Persistable 인터페이스를 구현해서 판단 로직 변경 가능 */
+/**
+ * Persistable 인터페이스를 구현해서 판단 로직 변경 가능
+ * @GenerateValue 어노테이션은 영속될 때 자동으로 기본키값 생성
+ * @GenerateValue 안 쓰고 직접 기본키 값 설정하고 save() 호출하면 병헙이 적용됨
+ * 병합은 해당 엔티티가 데이터베이스에 있는지 select 쿼리로 확인하고 없으면 저장하기 때문에 비효율적
+ * @GenerateValue 안 쓰고 직접 기본키 값 설정할 때 병합이 적용되지 않게 하는 예제
+ *  */
 public class Item implements Persistable<String> {
 
     /**
@@ -51,14 +57,17 @@ public class Item implements Persistable<String> {
     /**
      * Persistable 메서드 오버라이딩
      *
-     * 새로운 엔티티 확인 여부 확인
+     * 새로운 엔티티인지 확인하는걸 직접 작성
      * Persistable인터페이스 가지고 있으면 이거로 판단하는
      * Persistable 상속받아 만든 메서드
-     * 새거가 아닌지 맞는지 로직 짜는 */
+     * 새거가 아닌지 맞는지 로직 짜는
+     * */
     @Override
     public boolean isNew() {
-        /** 생성날짜가 없으면 새로운 객체다, 값이 있으면 jpa를 통해 들어간것이니
-        //생성날짜가 있다는건 그 전에 이 객체가 들어갔다는것 */
+        /**
+         * 생성날짜가 없으면 새로운 객체다, 값이 있으면 jpa를 통해 들어간것이니
+         * 생성날짜가 있다는건 그 전에 이 객체가 들어갔다는것
+         * */
         return createdDate == null;
     }
 }

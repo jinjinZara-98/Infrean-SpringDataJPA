@@ -40,11 +40,13 @@ public class MemberController {
      * 도메인 클래스 컨버터 사용 후, 조회용으로만 사용하자
      *
      * 어차피 id는 기본키값이므로 도메인 클래스 컨버터 사용 가능
-     * 스프링이 중간에서 컨버팅하는 과정 끝내고 member에 파라미터 결과 자동의존주입해줌
-     * 쿼리도 똑같이 날아감, 간단할때만 사용
+     * 스프링이 중간에서 컨버팅하는 과정 끝내고 member에 파라미터 결과 자동의존주입 해줌
+     * 조회 쿼리도 똑같이 날아감, 간단할 때만 사용
+     * 권장하지 않는다
      * HTTP 요청은 회원 id 를 받지만 도메인 클래스 컨버터가 중간에 동작해서 회원 엔티티 객체를 반환
      * 도메인 클래스 컨버터도 리파지토리를 사용해서 엔티티를 찾음
      * 메인 클래스 컨버터로 엔티티를 파라미터로 받으면, 이 엔티티는 단순 조회용으로만 사용해야 한다
+     * 트랜잭션이 없는 상태이기 때문에
      * */
     @GetMapping("/members2/{id}")
     public String findMember2(@PathVariable("id") Member member) {
@@ -73,7 +75,7 @@ public class MemberController {
     /**
      * @PageableDefault는 개별설정, 글로벌설정(yml파일)보다 우선순위 높음
      * */
-    public Page<Member> list(@PageableDefault(size = 5) Pageable pageable) {
+    public Page<MemberDto> list(@PageableDefault(size = 5) Pageable pageable) {
         //findAll의 PagingAndSortingRepository로 pageable넘겨주기만 하면됨
 
         Page<Member> page = memberRepository.findAll(pageable);
@@ -81,14 +83,14 @@ public class MemberController {
 //        Page<MemberDto> pageDto = page.map(member -> new MemberDto(member.getId(), member.getUsername(),null ));
         Page<MemberDto> pageDto = page.map(member -> new MemberDto(member));
         //Page<MemberDto> pageDto = page.map(MemberDto::new) 이렇게 줄일 수 있음
-        return page;
+        return pageDto;
     }
 
     /**
      * 스프링이 어플리케이션 올라올때 이게 한 번 실행되는
      * 값이 없으니 데이터 넣는 코드
      * */
-//    @PostConstruct
+    @PostConstruct
     public void init() {
 
         //id 자동으로 생성되니

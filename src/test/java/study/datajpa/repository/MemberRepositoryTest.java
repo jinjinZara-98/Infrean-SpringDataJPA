@@ -229,6 +229,8 @@ public class MemberRepositoryTest {
         //반환타입 List도 가능, 대신 밑에 검증 메서드들 사용못함, 그냥 몇개만 꺼내오기 위한 용도`
         Page<Member> page = memberRepository.findByAge(age, pageRequest);
 
+//        List<Member> list = memberRepository.findTop2ByAge(age);
+
         //API인 경우에 그냥 반환하면 안되므로 DTO로 변환해 반환, 엔티티는 반환하면 안됨
         //page가 Member를 감싸고 있기 때문에 map은 내부의 것을 바꿔서 다른 결과를 내는
         Page<MemberDto> dtoPage = page.map(m -> new MemberDto(m.getId(), m.getUsername(), null));
@@ -370,7 +372,7 @@ public class MemberRepositoryTest {
         em.flush();
         em.clear();
 
-        //select한 다음에 for update 붙음
+        //select한 다음에 for update 붙음, 방언에 따라 동작방식이 달라짐
         List<Member> result = memberRepository.findLockByUsername("member1");
     }
 

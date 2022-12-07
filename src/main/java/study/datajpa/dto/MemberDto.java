@@ -19,7 +19,7 @@ public class MemberDto {
         this.teamName = teamName;
     }
 
-    /** dto는 엔티티를 봐도 괜찮음 */
+    /** dto는 엔티티를 봐도 괜찮음, 의존해도 괜찮다? */
     public MemberDto(Member member) {
         this.id = member.getId();
         this.username = member.getUsername();

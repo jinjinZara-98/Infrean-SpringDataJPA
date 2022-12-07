@@ -30,7 +30,8 @@ public class BaseEntity extends BaseTimeEntity{
 
     /**
      * 등록자, 수정자도 등록
-     * 그냥 두면 값이 안들어가므로 메인 클래스에 bean으로 등록 */
+     * 그냥 두면 값이 안들어가므로 스프링 설정 클래스에 bean으로 등록
+     * */
     @CreatedBy
     /** 등록은 수정 못하게 false로 */
     @Column(updatable = false)

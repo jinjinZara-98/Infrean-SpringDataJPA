@@ -20,7 +20,7 @@ import javax.persistence.*;
 //@NamedQuery처럼 엔티티그래프에 이름 지정하고 재활용하기 좋게
 //@NamedEntityGraph(name = "Member.all", attributeNodes = {@NamedAttributeNode("team"), @NamedAttributeNode("team")})
 @NamedEntityGraph(name = "Member.all", attributeNodes = @NamedAttributeNode("team"))
-public class Member extends BaseEntity {
+public class Member extends BaseEntity{
 
     @Id
     @GeneratedValue

@@ -8,16 +8,17 @@ import javax.persistence.PreUpdate;
 import java.time.LocalDateTime;
 
 /**
- * 생성시간 수정시간 알기위해
+ * 생성시간 수정시간 알기위해, 공통 관심사
  * Auditing
- * 순수 JPA 사용
+ * 순수 JPA 사용한
+ * 스프링 데이터 JPA 사용한 건 BaseEntity 와 BaseTimeEntity
  *
  * 진짜 상속관계가 아닌 속성들 그냥 내려서 테이블에서 같이 쓸 수 있게 하는
  * 이걸 상속한 member테이블 실행하면 등록과 수정 시간 열에 추가되지 않음
  *
- *  @MappedSuperclass를 추가해줘야 시간들 열에 추가됨,
+ *  @MappedSuperclass를 추가해줘야 시간들 엔티티에 추가됨,
  *
- *    공통 속성들 모아서 처리할 때 이 클래스 상속하는
+ * 공통 속성들 모아서 처리할 때 이 클래스 상속하는
 */
 @MappedSuperclass
 @Getter
@@ -26,7 +27,6 @@ public class JpaBaseEntity {
     /** 값을 혹시 실수라도 바뀌어도 db에 변경이 되지 않게 */
     @Column(updatable = false)
     private LocalDateTime createdDate;
-
     private LocalDateTime updatedDate;
 
     /**

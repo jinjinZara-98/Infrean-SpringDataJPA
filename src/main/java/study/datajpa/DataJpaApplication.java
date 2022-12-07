@@ -14,7 +14,6 @@ import java.util.UUID;
 /**
  * Auditing
  * 스프링 데이터 JPA 사용, 생성시간 수정시간 알기 위해
- *
  */
 @EnableJpaAuditing
 /**
@@ -34,11 +33,15 @@ public class DataJpaApplication {
 	/**
 	 * BaseEntity의 등록자 수정자
 	 * AuditorAware의 getCurrentAuditor를 구현
+	 *
+	 *
 	 */
 	@Bean
 	public AuditorAware<String> auditorProvider() {
-		//세션정보를 꺼내거나, httpsession에서 어떻게든 이걸 꺼내거나 해서 userid를 넣어
-		//등록되거나 수정이 될때 이 메서드를 호출해서 결과물을 꺼내가 등록자 수정자의 값이 채워짐
+		/**
+		 * 세션정보를 꺼내거나, httpsession에서 어떻게든 이걸 꺼내거나 해서 userid를 넣어
+		 * BaseEntity 가 등록되거나 수정이 될때 이 메서드를 호출해서 결과물을 꺼내가 등록자 수정자의 값이 채워짐
+		 */
 		return () -> Optional.of(UUID.randomUUID().toString());
 	}
 }

@@ -16,16 +16,21 @@ import java.time.LocalDateTime;
  * 생성시간 수정시간만 필요하면 이거만
  * 다른기능도 필요하면 BaseEntity
  * @MappedSuperclass 로 공통기능 모아놔서 이 클래스 상속해서 쓰는
+ *
+ * @EntityListeners(AuditingEntityListener.class) 는
+ * 이 클래스에 Auditing 기능 포함시킴
  */
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
 @Getter
 public class BaseTimeEntity {
 
+    /** 엔티티 생성되어 저장될 떄 시간이 자동 저장 */
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdDate;
 
+    /** 조회한 엔티티의 갑을 변경할 떄 시간이 자동 저장 */
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
 }

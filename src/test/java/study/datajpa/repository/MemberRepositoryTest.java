@@ -41,29 +41,53 @@ public class MemberRepositoryTest {
 
     @Test
     public void testMember() {
+        Member member = new Member("memberA");
+        //스프링 데이터 JPA 메서드로 사용
+        //getId()는 optional로 제공, get()은 optional에 있는거 깜
+        Member savedMember = memberRepository.save(member);
+        Member findMember = memberRepository.findById(savedMember.getId()).get();
+
+        assertThat(findMember.getId()).isEqualTo(member.getId());
+        assertThat(findMember.getUsername()).isEqualTo(member.getUsername());
+        assertThat(findMember).isEqualTo(member); //JPA 엔티티 동일성 보장
+    }
+
+    @Test
+    public void testTeam() {
+        //given
+        //member1 -> teamA
+        //member2 -> teamB
         Team teamA = new Team("teamA");
         Team teamB = new Team("teamB");
 
         teamRepository.save(teamA);
         teamRepository.save(teamB);
 
-        Member member1 = new Member("홍길동", 20, teamA);
-        Member member2 = new Member("임꺽정", 20, teamB);
+        memberRepository.save(new Member("홍길동", 20, teamA));
+        memberRepository.save(new Member("심봉사", 20, teamA));
+        memberRepository.save(new Member("임꺽정", 20, teamB));
 
-        memberRepository.save(member1);
-        memberRepository.save(member2);
-
-        List<Member> members = memberRepository.findAll();
-
-//        Member member = new Member("memberA");
-//        //스프링 데이터 JPA 메서드로 사용
-//        //getId()는 optional로 제공, get()은 optional에 있는거 깜
-//        Member savedMember = memberRepository.save(member);
-//        Member findMember = memberRepository.findById(savedMember.getId()).get();
+        List<Team> teams = teamRepository.findTeamFetchJoin();
 //
-//        assertThat(findMember.getId()).isEqualTo(member.getId());
-//        assertThat(findMember.getUsername()).isEqualTo(member.getUsername());
-//        assertThat(findMember).isEqualTo(member); //JPA 엔티티 동일성 보장
+//        for (Team team : teams) {
+//            System.out.println("프록시 객체 " + team.getMembers().getClass());
+//            for (Member member : team.getMembers()) {
+//                System.out.println("회원 " + member);
+//            }
+//        }
+//
+        System.out.println("조회한 Team 개수 " + teams.size());
+
+        for (Team team : teams) {
+            //여기서 추가 쿼리 날라가는, N+1 문제 발생
+            //일대다 컬렉션 패치 조인이나
+            List<Member> members = team.getMembers();
+
+            for (Member member : members) {
+                System.out.println("팀 이름 = " + team.getName() + " 회원 이름 = " + member.getUsername());
+            }
+            System.out.println();
+        }
     }
 
     @Test
@@ -330,19 +354,25 @@ public class MemberRepositoryTest {
         teamRepository.save(teamB);
 
         memberRepository.save(new Member("member1", 10, teamA));
-        memberRepository.save(new Member("member2", 20, teamB));
+        memberRepository.save(new Member("member2", 10, teamA));
+        memberRepository.save(new Member("member3", 20, teamB));
 
         em.flush();
         em.clear();
 
         //when
+        //페치 조인과 엔티티그래프 적용하지 않고 조회
 //        List<Member> members = memberRepository.findAll();
+
+        //NamedEntityGraph
         List<Member> members = memberRepository.findMemberNamedEntityGraph();
 
         //then
         for (Member member : members) {
-            member.getClass();
-//            member.getTeam().getName();
+            //지연 로딩으로 조회했다면 프록시
+            System.out.println("회원과 같이 갖고온 팀 객체 = " + member.getTeam().getClass());
+            //페치 조인이나 엔티티그래프 적용하지 않고 조회하면 이 부분에서 추가 쿼리가 실행된다
+            member.getTeam().getName();
         }
     }
 

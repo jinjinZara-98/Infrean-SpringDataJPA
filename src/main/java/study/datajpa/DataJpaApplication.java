@@ -14,6 +14,8 @@ import java.util.UUID;
 /**
  * Auditing
  * 스프링 데이터 JPA 사용, 생성시간 수정시간 알기 위해
+ *
+ * Auditing 어노테이션을 활성화시킴
  */
 @EnableJpaAuditing
 /**

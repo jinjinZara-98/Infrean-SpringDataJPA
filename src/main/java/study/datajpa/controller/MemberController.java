@@ -90,7 +90,8 @@ public class MemberController {
      * 스프링이 어플리케이션 올라올때 이게 한 번 실행되는
      * 값이 없으니 데이터 넣는 코드
      * */
-    @PostConstruct
+    //테스트 코드 때문에 비활성화
+//    @PostConstruct
     public void init() {
 
         //id 자동으로 생성되니

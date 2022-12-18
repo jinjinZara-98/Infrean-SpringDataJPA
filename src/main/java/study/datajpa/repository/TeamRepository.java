@@ -22,10 +22,12 @@ import java.util.List;
  */
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
+//    @Query("select t from Team t join fetch t.members")
     @Query("select distinct t from Team t join fetch t.members")
     List<Team> findTeamFetchJoin();
 
     @EntityGraph(attributePaths = {"members"})
+//    @Query("select t from Team t")
     @Query("select distinct t from Team t")
     List<Team> findTeamEntityGraph();
 }
